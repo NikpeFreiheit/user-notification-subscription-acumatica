@@ -80,6 +80,13 @@ Event-driven via RMQ was selected due to its durable delivery capabilities, deco
 ### Rationale for Selected Entities
 The Case and Appointment entities were selected for the MVP based on the examples provided in the assignment. These entities also allow demonstration of different filter condition types, including picklist-based and date/time-based filtering.
 
+### Dependencies
+**Acumatica Business Events** — the source of entity-change events. Without it, the processing pipeline has no data to handle.
+
+**ERP authentication / SSO** — provides user authentication and identity management. This is reused rather than built from scratch.
+
+**Delivery Service (email/SMS gateways)** — handles actual message delivery. It receives pre-built notifications for sending (out of scope).
+
 ### Subscription Scenarios Included for Demonstration of the Generic Approach
 
 |Subscription Business Context | Subscription parameters|
