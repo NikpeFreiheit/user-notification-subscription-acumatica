@@ -1,0 +1,7 @@
+@startuml
+
+autonumber
+
+title "Sequence Diagram for Admin Operations"
+
+@enduml

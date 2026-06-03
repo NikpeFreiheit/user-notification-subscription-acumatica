@@ -1,0 +1,46 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+
+LAYOUT_WITH_LEGEND()
+
+' Standard configuration for compatibility
+set separator none
+
+title Component Diagram
+
+Person(user, "Internal ERP User") 
+Person(admin, "Internal ERP Administrator") 
+Container_Ext(event, "Business Events", "Business Events - source of entity-change events")
+Container_Ext(auth, "Acumatica ERP authentication service", "Acumatica ERP authentication and access control service")
+Container_Ext(delivery, "Delivery Service") 
+Container_Ext(ui, "UI", "Manage subscriptions and notifications") 
+ContainerDb_Ext(db, "Subscription Database", "Stores subscriptions and templates") 
+Container_Ext(api,"Subscription API","CRUD subscriptions/templates for UI" )
+Container_Ext(adapt,"Adapter","Get events from Business Events and publishes them to RMQ")
+Container_Ext(rmq, "RabbitMQ", "Message broker for asynchronous event transport and buffering")
+
+System_Boundary(proc, "Event Processor") { 
+    Component(consumer, "Event Consumer", "RMQ Consumer", "Consumes entity-change events from RabbitMQ") 
+    Component(match, "Subscription Matcher", "Domain Service", "Matches incoming events against subscription rules") 
+    Component(renderer, "Notification Renderer", "Domain Service", "Builds notification messages from templates") 
+    Component(dispatcher, "Notification Dispatcher", "Application Service", "Sends notifications to delivery channels") 
+} 
+
+Rel(user, ui, "Manages own subscriptions") 
+Rel(admin, ui, "Manages all subscriptions and templates") 
+Rel(ui, api, "CRUD subscriptions/templates") 
+Rel(api,auth, "Validates session / resolves user_id")
+Rel(api, db, "Reads/writes subscription preferences and notification templates")
+Rel(event, adapt, "Emits entity-change events")
+Rel(adapt, rmq, "Publishes events to RabbitMQ")
+Rel(rmq, consumer, "Delivers entity-change events")
+Rel(consumer, match, "Passes event for matching")
+Rel(match, db, "Loads subscriptions matching the event")
+Rel(renderer, db, "Loads notification template")
+Rel(match, renderer, "Passes matched subscriptions")
+Rel(renderer, dispatcher, "Passes rendered notification") 
+Rel(dispatcher, delivery, "Sends notification message")
+
+
+@enduml

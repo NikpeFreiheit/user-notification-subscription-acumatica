@@ -1,0 +1,24 @@
+================================================================================
+[← Back] Create Notification Rule
+================================================================================
+
+1. Select System Object:
+   [ Choose Entity: (Appointment / Support Case / Customer)  ▼ ] v: Support Case
+
+2. Trigger Conditions (Filters):
+   If   [ Status          ▼ ] [ Equals    ▼ ] [ Escalated                ] (remove x)
+   AND  [ Priority        ▼ ] [ Equals    ▼ ] [ High                     ]
+   [+ Add Condition]
+
+3. Delivery Method:
+   [ ] Email (veronika@company.com)
+   [x] SMS   (+7 999 123-45-67)
+
+4. Message Template:
+   Available variables: {case.id}, {case.title}, {case.assignee}
+   ┌──────────────────────────────────────────────────────────────────────────┐
+   │ Attention! Case #{case.id} ("{case.title}") has been Escalated!         │
+   └──────────────────────────────────────────────────────────────────────────┘
+
+                                                       [ Cancel ] [ Save Rule ]
+================================================================================

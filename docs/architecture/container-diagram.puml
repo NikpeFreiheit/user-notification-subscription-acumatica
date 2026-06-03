@@ -1,0 +1,40 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_WITH_LEGEND()
+
+' Standard configuration for compatibility
+set separator none
+
+title Container Diagram
+
+Person(user, "Internal ERP User", "Manager/Dispatcher, Agent/Technician")
+Person(admin, "Internal ERP Administrator", "Manages all subscriptions and notification templates")
+
+System_Boundary(erp, "Acumatica ERP") {
+    Container_Ext(event, "Business Events", "Business Events - source of entity-change events")
+    Container_Ext(auth, "Acumatica ERP authentication service", "Acumatica ERP authentication and access control service")
+}
+
+System_Boundary(subscr, "Subscription Service") {
+    Container(ui, "UI", "Manage subscriptions and notifications")
+    Container(adapt,"Adapter","Get events from Business Events and publishes them to RMQ")
+    Container(api,"Subscription API","CRUD subscriptions/templates for UI" )
+    Container(proc,"Event Processor","Read from RMQ, matches against subscriptions, renders notifications.")
+    Container(rmq, "RabbitMQ", "Message broker for asynchronous event transport and buffering")
+    ContainerDb(db, "Subscription Database", "Stores user subscription preferences and notification templates")
+}
+
+System_Ext(delivery, "Delivery Service", "Email/SMS gateways for sending notifications")
+
+Rel(user,ui, "Manage subscriptions via UI")
+Rel(ui,api, "Sends subscription preferences. Includes identity from ERP-session for access control")
+Rel(admin,ui, "Manages all user subscriptions and notification templates via UI")
+Rel(event,adapt, "Emits entity-change events")
+Rel(adapt,rmq, "Publishes events to RabbitMQ")
+Rel(rmq,proc, "Delivers entity-change events for processing")
+Rel(proc,delivery, "Sends notification messages")
+Rel(delivery,user, "Delivers email / SMS")
+Rel(api,db, "Reads/writes subscription preferences and notification templates")
+Rel(proc,db, "Reads subscription preferences and notification templates")
+Rel_L(api,auth, "Validates session / resolves user_id")
+@enduml

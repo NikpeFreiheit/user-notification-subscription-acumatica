@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Context diagram
+
+Person(user, "Internal ERP User", "Manager/Dispatcher, Agent/Technician")
+Person(admin, "Internal ERP Administrator", "Manages all subscriptions and notification templates")
+System_Ext(erp, "Acumatica ERP", "Business Events  - source of entity-change events ")
+System(subscr, "Subscription Service", "System for managing user subscriptions and creating notification messages")
+System_Ext(delivery, "Delivery Service", "Email/SMS gateways for sending notifications")
+
+Rel(user,subscr, "Manage subscriptions via UI")
+Rel(erp,subscr, "Emits entity-change events")
+Rel(subscr,delivery, "Sends notification messages")
+Rel(delivery,user, "Delivers email / SMS")
+Rel(subscr,erp, "Authenticates users via ERP SSO")
+Rel(admin,subscr, "Manage user subscriptions")
+
+@enduml
