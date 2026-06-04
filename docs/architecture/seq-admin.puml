@@ -1,7 +1,57 @@
 @startuml
 
 autonumber
+skinparam actorStyle awesome
 
-title "Sequence Diagram for Admin Operations"
+title "Manage Subscriptions and Notification Templates"
+
+actor Admin
+
+participant "UI" as ui
+participant "Subscription API" as api
+participant "Acumatica ERP Auth" as auth
+database "Subscription DB" as db
+
+== Authentication & Authorization (applies to all requests) ==
+
+Admin -> ui : Open admin management
+ui -> api : Request subscriptions/templates
+
+api -> auth : Validate session / resolve user_id
+auth --> api : identity confirmed
+
+api -> auth : Verify admin role / authorize access
+auth --> api : role = ADMIN confirmed
+
+note right of api
+All subsequent requests in this flow
+require:
+- session validation
+- admin role authorization
+end note
+
+== Read data ==
+
+api -> db : Load all subscriptions + templates
+db --> api : Return data
+api --> ui : Display management view
+
+== Manage Template ==
+
+Admin -> ui : Create / update template
+ui -> api : POST/PUT template
+
+api -> db : Save template changes
+db --> api : Confirm persistence
+api --> ui : Success response
+
+== Manage Subscription ==
+
+Admin -> ui : Create / update subscription
+ui -> api : POST/PUT subscription
+
+api -> db : Save subscription changes
+db --> api : Confirm persistence
+api --> ui : Success response
 
 @enduml

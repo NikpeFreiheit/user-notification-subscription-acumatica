@@ -1,0 +1,58 @@
+@startuml
+
+autonumber
+skinparam actorStyle awesome
+title "Event Delivery Flow: Fan-out Notification Processing"
+
+participant "Acumatica Business Events" as be
+participant "Adapter" as adapter
+participant "RabbitMQ" as rmq
+participant "Event Consumer" as consumer
+participant "Subscription Matcher" as matcher
+database "Subscription DB" as db
+participant "Notification Renderer" as renderer
+participant "Notification Dispatcher" as dispatcher
+participant "Delivery Service" as delivery
+actor "User" as user
+
+== Event ingestion ==
+
+be -> adapter : entity-change event
+adapter ->> rmq : publish event
+rmq ->> consumer : deliver event
+
+== Processing ==
+
+consumer -> matcher : pass event
+
+matcher -> db : load matching subscriptions
+db --> matcher : matching subscriptions (list)
+
+loop For each matched subscription
+
+    matcher -> renderer : matched subscription
+
+    renderer -> db : load template
+    db --> renderer : template
+
+    renderer -> dispatcher : rendered notification
+
+    dispatcher -> delivery : send notification
+
+    alt delivery success
+        delivery -> user : email / SMS delivered
+    else delivery failure
+        dispatcher -> dispatcher : retry / handle failure
+    end
+
+end
+
+== Acknowledgement ==
+
+alt all notifications processed successfully
+    consumer -> rmq : ACK event
+else processing failure
+    consumer -> rmq : no ACK → retry / requeue → DLQ after N attempts
+end
+
+@enduml

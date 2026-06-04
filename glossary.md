@@ -4,7 +4,13 @@
 
 **Acumatica Business Event** - Механизм событийно-ориентированной автоматизации в Acumatica, который позволяет системе отслеживать изменения данных, действия пользователей или выполнение определённых условий и автоматически запускать заранее настроенные действия без необходимости ручного контроля. Позволяет реагировать на изменения в системе и запускать уведомления, интеграции, отчёты или кастомную логику на основе бизнес-событий.
 
-**Event-driven via RabbitMQ** - Архитектурный подход с использованием брокера сообщений RabbitMQ для асинхронного взаимодействия между **Acumatica Business Event** и **Subscription Service**
+**Event-driven via RabbitMQ** - Архитектурный подход с использованием брокера сообщений RabbitMQ для асинхронного взаимодействия между **Acumatica Business Event** и 
+
+**Subscription Matcher**
+Notification Renderer
+Notification Dispatcher
+Event Consumer
+Adapter
 
 ## Filter context
 

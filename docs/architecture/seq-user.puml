@@ -1,7 +1,50 @@
 @startuml
 
 autonumber
+skinparam actorStyle awesome
+title "Manage Own Subscriptions and Notifications"
 
-title "User Notification Subscription Flow"
+actor User
+
+participant "UI" as ui
+participant "Subscription API" as api
+participant "Acumatica ERP Auth" as auth
+database "Subscription DB" as db
+
+== Authentication & Authorization (applies to all requests) ==
+
+note over api
+Each request requires:
+- session validation
+- identity resolution (user_id)
+- access scope restriction (user can access only own data)
+- optional role check (USER) for symmetry with admin flow
+end note
+
+== View subscriptions ==
+
+User -> ui : Opens personal subscription settings
+ui -> api : GET subscriptions/templates
+
+api -> auth : Validate session / resolve user_id
+auth --> api : identity confirmed
+
+api -> db : Load subscriptions by user_id
+db --> api : Return user subscriptions + templates
+
+api --> ui : Display personal subscriptions
+
+== Update subscription preferences ==
+
+User -> ui : Update notification preferences
+ui -> api : POST/PUT subscription changes
+
+api -> auth : Validate session / resolve user_id
+auth --> api : identity confirmed
+
+api -> db : Update subscriptions for user_id scope
+db --> api : Confirm update
+
+api --> ui : Success response
 
 @enduml
