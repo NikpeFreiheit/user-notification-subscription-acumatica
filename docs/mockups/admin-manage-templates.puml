@@ -1,0 +1,26 @@
+@startsalt
+{
+  { <b>Manage Templates (Admin) | [+ New template] }
+  ==
+  {#
+  Name              | Status | Actions
+  Escalation notice | Active | [Edit] [Disable]
+  New appointment   | Active | [Edit] [Disable]
+  }
+  ~~
+  <b>Edit template
+  { Name | "Escalation notice" }
+  Available variables: entity_type, entity_id, record_link, event_type, assigned_to, priority, status
+  Variables shown as %name%; brace syntax in template-variables.md.
+  Subject
+  {+
+  "Case %entity_id%: %status%"
+  }
+  Body
+  {+
+  "Case %entity_id% changed to %status%. Open: %record_link%"
+  }
+  ==
+  { [ Cancel ] | [ Save template ] }
+}
+@endsalt

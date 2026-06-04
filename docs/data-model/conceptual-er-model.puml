@@ -1,0 +1,74 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity template {
+  * id : bigserial <<PK>>
+  --
+  * name : text
+  * subject : text
+  * body : text
+  * status : text
+  created_by : text
+}
+
+entity subscription {
+  * id : bigserial <<PK>>
+  --
+  * owner_user_id : text
+  * entity_type : text
+  * status : text
+  # template_id : bigint <<FK>>
+  custom_note : text
+}
+
+entity subscription_event_type {
+  * subscription_id : bigint <<PK, FK>>
+  * event_type : text <<PK>>
+}
+
+entity subscription_channel {
+  * subscription_id : bigint <<PK, FK>>
+  * channel : text <<PK>>
+}
+
+entity subscription_condition {
+  * id : bigserial <<PK>>
+  --
+  # subscription_id : bigint <<FK>>
+  * field : text
+  * operator : text
+  * value : text
+  value_to : text
+}
+
+entity user_contacts {
+  * user_id : text <<PK>>
+  * channel : text <<PK>>
+  --
+  * address : text
+}
+
+entity notification {
+  * id : bigserial <<PK>>
+  --
+  # subscription_id : bigint <<FK>>
+  * channel : text
+  * recipient : text
+  * status : text
+  created_at : timestamptz
+}
+
+template      ||--o{ subscription
+subscription  ||--o{ subscription_event_type
+subscription  ||--o{ subscription_channel
+subscription  ||--o{ subscription_condition
+subscription  ||--o{ notification
+
+note bottom of user_contacts
+  user_id and subscription.owner_user_id
+  reference ERP users. No local users table:
+  identity is owned by Acumatica ERP.
+end note
+
+@enduml

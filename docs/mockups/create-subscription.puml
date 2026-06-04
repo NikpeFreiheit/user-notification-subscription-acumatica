@@ -1,0 +1,25 @@
+@startsalt
+{
+  { [<- Back] | <b>Create Subscription }
+  ==
+  { Entity   | ^Case^ }
+  { On event | [X] Created | [ ] Updated }
+  ~~
+  <b>Conditions (combined with AND)
+  {#
+  If  | ^Status^   | ^Equals^ | "Escalated" | [X]
+  And | ^Priority^ | ^Equals^ | "High"      | [X]
+  }
+  { [+ Add condition] }
+  ~~
+  <b>Delivery channels
+  { [ ] Email | "veronika@company.com" }
+  { [X] SMS   | "+7 999 123-45-67" }
+  ~~
+  <b>Template
+  { Template    | ^Escalation notice^ }
+  { Custom note | "optional plain text (no variables)" }
+  ==
+  { [ Cancel ] | [ Save ] }
+}
+@endsalt

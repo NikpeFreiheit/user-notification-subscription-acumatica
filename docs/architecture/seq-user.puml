@@ -18,7 +18,6 @@ Each request requires:
 - session validation
 - identity resolution (user_id)
 - access scope restriction (user can access only own data)
-- optional role check (USER) for symmetry with admin flow
 end note
 
 == View subscriptions ==

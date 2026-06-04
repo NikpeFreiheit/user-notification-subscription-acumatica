@@ -1,0 +1,14 @@
+@startsalt
+{
+  { <b>Manage Subscriptions (Admin) }
+  { Search | "user or entity..." | Status | ^All^ }
+  ==
+  {#
+  ID  | Owner      | Entity      | On event | Channels   | Status   | Actions
+  001 | v.gvozdeva | Case        | Updated  | Email      | Active   | [Edit] [Disable]
+  002 | j.doe      | Appointment | Created  | Email, SMS | Active   | [Edit] [Disable]
+  003 | a.smith    | Case        | Created  | SMS        | Disabled | [Edit] [Enable]
+  }
+  { Showing 1-3 of 145 | [Prev] | [1] | [2] | [Next] }
+}
+@endsalt

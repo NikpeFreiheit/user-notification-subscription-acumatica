@@ -1,36 +1,56 @@
 # Filter Conditions
 
-In there document we cave Dependencies on **Acumatica Business Events** — the source of entity-change events.
-We assume that Business Events have the message and it has the form like
+## Model
+
+A subscription matches an event when its filter conditions evaluate to true against the event data.
+
+- A condition is `{field, operator, value}`.
+- A subscription has zero or more conditions, combined with `AND` (MVP). `OR` / `NOT` → Phase 2.
+- `entity_type`, `event_type`, and `channels` are **subscription attributes, not filter conditions**: they select which events to consider and how to deliver, not which field values to match.
+- Matching uses **state** semantics: for an `Updated` event, a condition matches the resulting field value. Transition semantics (field *changed to* value) → Phase 2.
+
+## Filterable fields per entity
+
+| Entity | Field | Type |
+|---|---|---|
+| Case | Priority | picklist |
+| Case | Status | picklist |
+| Case | Assigned To | reference (user) |
+| Appointment | Created Date | date |
+| Appointment | Scheduled Date | date |
+| Appointment | Assigned To | reference (user) |
+
+Adding a new entity = adding rows here, not changing code.
+
+## Operators by field type
+
+| Field type | Operators (MVP) | Phase 2 |
+|---|---|---|
+| picklist | `=` | `in`, `≠` |
+| date | `=`, `before`, `after`, `between` | relative ranges |
+| number | `=`, `<`, `>`, `between` | — |
+| text | `=`, `contains` | — |
+| boolean | `=` | — |
+| reference (user) | `=`, where value `me` resolves to the current user_id | — |
+
+For `between` (date / number), both bounds are inclusive (`>= from AND <= to`).
+
+## Condition values in MVP scope
+
+- Case Priority `=` High
+- Case Status `=` Escalated
+- Case / Appointment Assigned To `=` me (current user_id)
+- Appointment Created Date / Scheduled Date `between` from–to
+
+## Example
+
+Notify me when a Case is escalated:
 
 ```
-{ entity_type: Case, 
-id: 1234, 
-event_type: Updated, 
-fields: { 
-    priority: High, 
-    status: Escalated, 
-    assigned_to: 56 }
- }
- ```
-Matcher get filter conditions from Database and compare that with event message
-event_type `Created` or `Updated`
-
-## Case Filter Conditions
-| Parameter |	Description |
-|---|---|
-|Entity| Case |
-|Field|	Status, Priority, Assigned to |
-|Comparison Operator| 1. Status comparison operator `=` <br> 2. Event type comparison operator `=` <br> 3. Priority comparison operator `=` <br> 4. Assigned to comparison operator `=`|
-|Value used in the comparison| 1. Status: `Escalated` <br> 3. Priority: `High` <br> 4. Assigned to: `user_id` |
-
-## Appointment Filter Conditions
-| Parameter | Description |
-|---|---|
-| Entity | Appointment |
-| Field | Channel, Event Type, Assigned To, Created Date, Scheduled Date |
-| Operator | 1. Event Type: `=` <br> 2. Assigned To: `=` <br> 3. Created Date: `On`, `On or After`, `On or Before`, `Between` <br> 4. Scheduled Date: `On`, `On or After`, `On or Before`, `Between` |
-| Value Used in the Comparison | 1. Event Type: `Created` <br> 2. Assigned To: `user_id` <br> 3. Created Date: manual entry (`DD.MM.YYYY`) or Date Picker <br> 4. Scheduled Date: manual entry (`DD.MM.YYYY`) or Date Picker |
-| Date Range Selection | For the `Between` operator, users select **From** and **To** dates. Both boundary dates are included in the filter results (`>= From` and `<= To`). |
-
-
+entity_type: Case
+event_types: [Updated]
+logic: AND
+conditions:
+  - { field: Status, operator: "=", value: "Escalated" }
+channels: [Email]
+```

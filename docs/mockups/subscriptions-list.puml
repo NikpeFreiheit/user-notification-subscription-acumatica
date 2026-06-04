@@ -1,0 +1,12 @@
+@startsalt
+{
+  { <b>My Subscriptions | [+ New subscription] }
+  ==
+  {#
+  ID  | Entity      | On event | Conditions                    | Channels   | Status   | Actions
+  001 | Case        | Updated  | Status = Escalated            | Email      | Active   | [Edit] [Disable] [Delete]
+  002 | Case        | Created  | Priority = High, Assigned = me | SMS       | Active   | [Edit] [Disable] [Delete]
+  003 | Appointment | Created  | Scheduled date in range       | Email, SMS | Disabled | [Edit] [Enable] [Delete]
+  }
+}
+@endsalt

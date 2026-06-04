@@ -1,0 +1,13 @@
+@startsalt
+{
+  { <b>Notification History }
+  { Filter | ^All statuses^ | ^All channels^ }
+  ==
+  {#
+  Time         | Subscription | Channel | Status
+  04 Jun 14:22 | 001          | Email   | Delivered
+  04 Jun 11:05 | 002          | SMS     | Delivered
+  03 Jun 18:40 | 002          | SMS     | Failed
+  }
+}
+@endsalt
