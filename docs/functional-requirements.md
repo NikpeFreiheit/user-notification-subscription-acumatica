@@ -53,7 +53,7 @@ Acceptance criteria:
 | FR-020 | MUST | A subscription specifies one entity type and one or more event types in scope: Case (`Created`, `Updated`), Appointment (`Created`). |
 | FR-021 | MUST | A subscription specifies zero or more filter conditions in the `{field, operator, value}` model, combined with `AND`. |
 | FR-022 | MUST | A subscription specifies one or more delivery channels (Email and/or SMS); the choice is the user's. |
-| FR-023 | MUST | A subscription specifies a notification template and may add an optional plain-text custom subject or note. Custom text does not support variable substitution. |
+| FR-023 | MUST | A subscription specifies a notification template and may add an optional plain-text custom note. Custom text does not support variable substitution. |
 | FR-024 | Phase 2 | A subscription may combine conditions with `OR`/`NOT`. Out of MVP. |
 
 Acceptance criteria:

@@ -6,7 +6,7 @@ title "Event Delivery Flow: Fan-out Notification Processing"
 
 participant "Acumatica Business Events" as be
 participant "Adapter" as adapter
-participant "RabbitMQ" as rmq
+queue "RabbitMQ" as rmq
 participant "Event Consumer" as consumer
 participant "Subscription Matcher" as matcher
 database "Subscription DB" as db
